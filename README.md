@@ -44,10 +44,8 @@ Vim session, delete Vim session and list Vim sessions. Commands to call these 4
 functionalities are shown as below:
 
 ```vimL
-:lua require('souvenir').save_session{'souvenir'} " don't override existing
-session file
-:lua require('souvenir').save_session{'souvenir', true} " override exisitng
-session file
+:lua require('souvenir').save_session{'souvenir'} " don't override existing session file
+:lua require('souvenir').save_session{'souvenir', true} " override exisitng session file
 :lua require('souvenir').restore_session('souvenir')
 :lua require('souvenir').delete_session('souvenir')
 :lua require('souvenir').list_session()
