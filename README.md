@@ -57,13 +57,24 @@ souvenir.nvim currently provides 4 functionalities: save Vim session, restore
 Vim session, delete Vim session and list Vim sessions. Commands to call these 4
 functionalities are shown as below:
 
-```vimL
-:lua require('souvenir').save_session{'souvenir'} " don't override existing session file
-:lua require('souvenir').save_session{'souvenir', true} " override exisitng session file
+```viml
+:SouvenirSave       " don't override existing session file
+:SouvenirSaveForce  " override existing session file
+:SouvenirRestore
+:SouvenirDelete
+:SouvenirList
+```
+
+```lua
+:lua require('souvenir').save_session{'souvenir'} -- don't override existing session file
+:lua require('souvenir').save_session{'souvenir', true} -- override exisitng session file
 :lua require('souvenir').restore_session('souvenir')
 :lua require('souvenir').delete_session('souvenir')
 :lua require('souvenir').list_session()
 ```
+
+If option `override` is set to true, there should be no behavioural differences
+between `:SouvenirSave` and `:SouvenirSaveForce` or their lua counterparts.
 
 ## Inspiration
 
