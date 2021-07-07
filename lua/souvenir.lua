@@ -32,6 +32,7 @@ local SHADA_PATH = (function()
   end
 end)()
 local session_path = nil
+local override_opt = false
 
 local function set_session_path(path)
   session_path = vim.fn.expand(path)
@@ -90,7 +91,7 @@ local function save_session(args)
   setmetatable(args, { __index = { override = false } })
   local session_file = args[1]..'.vim' or args.session..'.vim'
   local session_shada = args[1]..'.shada' or args.session..'.shada'
-  local override = args[2] or args.override
+  local override = args[2] or args.override or override_opt
 
   session_path = session_path_init()
 
@@ -156,7 +157,10 @@ local function setup(cfg_tbl)
   if sp ~= nil and sp ~= '' then
     set_session_path(sp)
   end
-  -- override = cfg_tbl['override']
+
+  if cfg_tbl['override'] ~= nil then
+    override_opt = cfg_tbl['override']
+  end
   -- shada = cfg_tbl['shada']
 end
 
