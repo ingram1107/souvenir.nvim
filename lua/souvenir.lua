@@ -33,6 +33,7 @@ local SHADA_PATH = (function()
 end)()
 local session_path = nil
 local override_opt = false
+local shada        = true
 
 local function set_session_path(path)
   session_path = vim.fn.expand(path)
@@ -97,10 +98,14 @@ local function save_session(args)
 
   if override == false and is_file_exist(session_path..session_file) == false then
     vim.api.nvim_exec('mksession '..session_path..session_file, false)
-    vim.api.nvim_exec('wshada! '..SHADA_PATH..session_shada, false)
+    if shada ~= false then
+      vim.api.nvim_exec('wshada! '..SHADA_PATH..session_shada, false)
+    end
   elseif override == true then
     vim.api.nvim_exec('mksession! '..session_path..session_file, false)
-    vim.api.nvim_exec('wshada! '..SHADA_PATH..session_shada, false)
+    if shada ~= false then
+      vim.api.nvim_exec('wshada! '..SHADA_PATH..session_shada, false)
+    end
   else
     vim.api.nvim_err_writeln('fatal: '..session_file..' exists! pass second arg as `true` to `save_session` to override the file')
   end
@@ -114,7 +119,9 @@ local function restore_session(session)
 
   if is_file_exist(session_path..session_file) == true then
     vim.api.nvim_exec('source '..session_path..session_file, false)
-    vim.api.nvim_exec('rshada! '..SHADA_PATH..session_shada, false)
+    if shada ~= false then
+      vim.api.nvim_exec('rshada! '..SHADA_PATH..session_shada, false)
+    end
   else
     vim.api.nvim_err_writeln('fatal: '..session_file..' does not exist')
   end
@@ -144,7 +151,9 @@ local function delete_session(session)
 
   if is_file_exist(session_path..session_file) == true then
     vim.fn.delete(session_path..session_file)
-    vim.fn.delete(SHADA_PATH..session_shada)
+    if shada ~= false then
+      vim.fn.delete(SHADA_PATH..session_shada)
+    end
     vim.api.nvim_echo({{'souvenir: session `'..session..'` deleted', 'Normal'}}, true, {})
   else
     vim.api.nvim_err_writeln('fatal: '..session_file..' does not exist')
@@ -161,7 +170,10 @@ local function setup(cfg_tbl)
   if cfg_tbl['override'] ~= nil then
     override_opt = cfg_tbl['override']
   end
-  -- shada = cfg_tbl['shada']
+
+  if cfg_tbl['shada'] ~= nil then
+    shada = cfg_tbl['shada']
+  end
 end
 
 return {
