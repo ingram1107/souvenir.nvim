@@ -39,6 +39,20 @@ according to your system environment variables. Currently, this plugin only
 support Linux path. (Do not work in Windows, may not work in macOS and
 BSD-variants)
 
+Other settings such as `override` and `shada` are available too. Set `override`
+to `true` will allow the behaviour of overriding an existing session to be the
+default behaviour. Set `shada` to `true` will allow more information in the
+current session to be stored such as command line history, contents of registers
+and marks for files. (more details see `:h shada`) Defaults values are set as
+below:
+
+```lua
+require('souvenir').setup {
+  override = false,
+  shada = true,
+}
+```
+
 souvenir.nvim currently provides 4 functionalities: save Vim session, restore
 Vim session, delete Vim session and list Vim sessions. Commands to call these 4
 functionalities are shown as below:
