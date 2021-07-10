@@ -20,10 +20,10 @@ if vim.version().minor < 5 then
 end
 
 local SHADA_PATH = (function()
-  if vim.env.XDG_DATA_HOME ~= nil then
-    return vim.env.XDG_DATA_HOME..'/nvim/shada/'
+  if os.getenv('XDG_DATA_HOME') ~= nil then
+    return os.getenv('XDG_DATA_HOME')..'/nvim/shada/'
   else
-    return vim.env.HOME..'.local/share/nvim/shada/'
+    return os.getenv('HOME')..'.local/share/nvim/shada/'
   --[[
     TODO:
         add window path support
