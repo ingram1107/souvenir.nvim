@@ -54,7 +54,7 @@ local function is_file_exist(file)
 end
 
 local function create_dir_recur(path)
-  if vim.fn.mkdir(path, 'p') == false then
+  if os.execute('mkdir -p '..path) > 0 then
     vim.api.nvim_err_writeln('fatal: cannot create directory '..path)
   else
     vim.api.nvim_echo({{'souvenir: directory '..path..' successfully created', 'Normal'}}, true, {})
@@ -63,13 +63,13 @@ end
 
 local function session_path_init()
   if session_path == '' or session_path == nil then
-    if vim.env.XDG_DATA_HOME ~= nil then
-      session_path = vim.env.XDG_DATA_HOME..'/nvim/souvenirs/'
+    if os.getenv('XDG_DATA_HOME') ~= nil then
+      session_path = os.getenv('XDG_DATA_HOME')..'/nvim/souvenirs/'
       if is_dir_exist(session_path) == false then
         create_dir_recur(session_path)
       end
     else
-      session_path = vim.env.HOME..'/.local/share/nvim/souvenirs/'
+      session_path = os.getenv('HOME')..'/.local/share/nvim/souvenirs/'
       if is_dir_exist(session_path) == false then
         create_dir_recur(session_path)
       end
@@ -150,9 +150,13 @@ local function delete_session(session)
   session_path = session_path_init()
 
   if is_file_exist(session_path..session_file) == true then
-    vim.fn.delete(session_path..session_file)
+    if os.execute('rm '..session_path..session_file) > 0 then
+      vim.api.nvim_err_writeln('fatal: cannot delete'..session_file..', check your permission!')
+    end
     if shada ~= false then
-      vim.fn.delete(SHADA_PATH..session_shada)
+      if os.execute('rm '..SHADA_PATH..session_shada) >0 then
+        vim.api.nvim_err_writeln('fatal: cannot delete'..session_shada..', check your permission!')
+      end
     end
     vim.api.nvim_echo({{'souvenir: session `'..session..'` deleted', 'Normal'}}, true, {})
   else
