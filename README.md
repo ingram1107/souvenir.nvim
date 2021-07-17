@@ -34,7 +34,7 @@ require('souvenir').setup {
 ```
 
 Or else the default session path would be set to
-`$XDG_DATA_HOME/nvim/souvenirs/` or `$HOME/.local/share/nvim/souvenirs/`
+`$XDG_DATA_HOME/nvim/souvenirs` or `$HOME/.local/share/nvim/souvenirs`
 according to your system environment variables. Currently, this plugin only
 support Linux path. (Do not work in Windows, may not work in macOS and
 BSD-variants)
