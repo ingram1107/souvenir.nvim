@@ -87,7 +87,7 @@ between `:SouvenirSave` and `:SouvenirSaveForce` or their lua counterparts.
 - [x] delete session
   - [ ] delete multiple sessions
 - [x] list sessions
-- [ ] session name completion
+- [x] session name completion
 - [ ] interactive buffer?
 - [ ] cross-platform
   - [ ] Windows
