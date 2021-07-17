@@ -64,12 +64,12 @@ end
 local function session_path_init()
   if session_path == '' or session_path == nil then
     if os.getenv('XDG_DATA_HOME') ~= nil then
-      session_path = os.getenv('XDG_DATA_HOME')..'/nvim/souvenirs/'
+      session_path = os.getenv('XDG_DATA_HOME')..'/nvim/souvenirs'
       if is_dir_exist(session_path) == false then
         create_dir_recur(session_path)
       end
     else
-      session_path = os.getenv('HOME')..'/.local/share/nvim/souvenirs/'
+      session_path = os.getenv('HOME')..'/.local/share/nvim/souvenirs'
       if is_dir_exist(session_path) == false then
         create_dir_recur(session_path)
       end
@@ -94,7 +94,7 @@ local function save_session(args)
   local session_shada = args[1]..'.shada' or args.session..'.shada'
   local override = args[2] or args.override or override_opt
 
-  session_path = session_path_init()
+  session_path = session_path_init()..'/'
 
   if override == false and is_file_exist(session_path..session_file) == false then
     vim.api.nvim_exec('mksession '..session_path..session_file, false)
@@ -115,7 +115,7 @@ local function restore_session(session)
   local session_file = session..'.vim'
   local session_shada = session..'.shada'
 
-  session_path = session_path_init()
+  session_path = session_path_init()..'/'
 
   if is_file_exist(session_path..session_file) == true then
     vim.api.nvim_exec('source '..session_path..session_file, false)
@@ -128,15 +128,15 @@ local function restore_session(session)
 end
 
 local function list_session()
-  session_path = session_path_init()
+  session_path = session_path_init()..'/'
 
   if is_dir_exist(session_path) == true then
     local file_list_tbl = scan.scan_dir(session_path, { depth = 1 })
     print('Session List:')
     print(' ')
     for i, file in ipairs(file_list_tbl) do
-      local base_file = vim.fn.substitute(file, '.*/\\ze', '', '')
-      print('    '..i..'. '..vim.fn.substitute(base_file, '\\.vim', '', ''))
+      local base_file = vim.fn.substitute(file, '.*/', '', '')
+      print('    '..i..'. '..vim.fn.substitute(base_file, '.vim', '', ''))
     end
   else
     vim.api.nvim_echo({{'souvenir: no session has been stored', 'Normal'}}, true, {})
@@ -147,7 +147,7 @@ local function delete_session(session)
   local session_file = session..'.vim'
   local session_shada = session..'.shada'
 
-  session_path = session_path_init()
+  session_path = session_path_init()..'/'
 
   if is_file_exist(session_path..session_file) == true then
     if os.execute('rm '..session_path..session_file) > 0 then

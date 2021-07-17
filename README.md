@@ -29,7 +29,7 @@ You could set-up your session path as follows:
 
 ```lua
 require('souvenir').setup {
-  session_path = '~/.config/nvim/sessions/' -- a backslash is needed
+  session_path = '~/.config/nvim/sessions'
 }
 ```
 
