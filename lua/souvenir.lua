@@ -45,10 +45,6 @@ async = vim.loop.new_async(function()
 end)
 async:send()
 
-local function get_session_path()
-  return session_path
-end
-
 local function session_path_init(path)
   if path == '' or path == nil then
     if os.getenv('XDG_DATA_HOME') ~= nil then
@@ -77,7 +73,13 @@ local function session_path_init(path)
   return path..'/'
 end
 
-local function save_session(args)
+local M = {}
+
+function M._session_path()
+  return session_path
+end
+
+function M.save_session(args)
   setmetatable(args, { __index = { override = false } })
   local session_file = args[1]..'.vim' or args.session..'.vim'
   local session_shada = args[1]..'.shada' or args.session..'.shada'
@@ -98,7 +100,7 @@ local function save_session(args)
   end
 end
 
-local function restore_session(session)
+function M.restore_session(session)
   local session_file = session..'.vim'
   local session_shada = session..'.shada'
 
@@ -112,7 +114,7 @@ local function restore_session(session)
   end
 end
 
-local function list_session()
+function M.list_session()
   if utils.is_dir_exist(session_path) == true then
     fs_table:scandir(session_path)
     if not fs_table:is_empty() then
@@ -127,7 +129,7 @@ local function list_session()
   end
 end
 
-local function delete_session(session)
+function M.delete_session(session)
   local session_file = session..'.vim'
   local session_shada = session..'.shada'
 
@@ -146,7 +148,7 @@ local function delete_session(session)
   end
 end
 
-local function setup(cfg_tbl)
+function M.setup(cfg_tbl)
   local sp = cfg_tbl['session_path']
 
   session_path = session_path_init(sp)
@@ -160,11 +162,4 @@ local function setup(cfg_tbl)
   end
 end
 
-return {
-  save_session    = save_session,
-  restore_session = restore_session,
-  delete_session  = delete_session,
-  list_session    = list_session,
-  _session_path   = get_session_path,
-  setup           = setup,
-}
+return M
