@@ -13,6 +13,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>
 --]]
 local fs_table = require('souvenir.fs_table')
+local utils = require('utils')
 
 if vim.version().minor < 5 then
   vim.api.nvim_err_writeln('fatal: souvenir: require Neovim version 0.5+')
@@ -48,39 +49,17 @@ local function get_session_path()
   return session_path
 end
 
-local function is_dir_exist(dir)
-  if vim.fn.isdirectory(dir) == 1 then
-    return true
-  end
-  return false
-end
-
-local function is_file_exist(file)
-  if vim.fn.empty(vim.fn.glob(file)) ~= 1 and vim.fn.filereadable(vim.fn.glob(file)) == 1 then
-    return true
-  end
-  return false
-end
-
-local function create_dir_recur(path)
-  if os.execute('mkdir -p '..path) > 0 then
-    vim.api.nvim_err_writeln('fatal: cannot create directory '..path)
-  else
-    vim.api.nvim_echo({{'souvenir: directory '..path..' successfully created', 'Normal'}}, true, {})
-  end
-end
-
 local function session_path_init(path)
   if path == '' or path == nil then
     if os.getenv('XDG_DATA_HOME') ~= nil then
       path = os.getenv('XDG_DATA_HOME')..'/nvim/souvenirs'
-      if is_dir_exist(path) == false then
-        create_dir_recur(path)
+      if utils.is_dir_exist(path) == false then
+        utils.create_dir_recur(path)
       end
     else
       path = os.getenv('HOME')..'/.local/share/nvim/souvenirs'
-      if is_dir_exist(path) == false then
-        create_dir_recur(path)
+      if utils.is_dir_exist(path) == false then
+        utils.create_dir_recur(path)
       end
     end
     --[[
@@ -90,8 +69,8 @@ local function session_path_init(path)
     --]]
   else
     path = vim.fn.expand(path)
-    if is_dir_exist(path) == false then
-      create_dir_recur(path)
+    if utils.is_dir_exist(path) == false then
+      utils.create_dir_recur(path)
     end
   end
 
@@ -104,7 +83,7 @@ local function save_session(args)
   local session_shada = args[1]..'.shada' or args.session..'.shada'
   local override = args[2] or args.override or override_opt
 
-  if override == false and is_file_exist(session_path..session_file) == false then
+  if override == false and utils.is_file_exist(session_path..session_file) == false then
     vim.api.nvim_exec('mksession '..session_path..session_file, false)
     if shada ~= false then
       vim.api.nvim_exec('wshada! '..SHADA_PATH..session_shada, false)
@@ -123,7 +102,7 @@ local function restore_session(session)
   local session_file = session..'.vim'
   local session_shada = session..'.shada'
 
-  if is_file_exist(session_path..session_file) == true then
+  if utils.is_file_exist(session_path..session_file) == true then
     vim.api.nvim_exec('source '..session_path..session_file, false)
     if shada ~= false then
       vim.api.nvim_exec('rshada! '..SHADA_PATH..session_shada, false)
@@ -134,7 +113,7 @@ local function restore_session(session)
 end
 
 local function list_session()
-  if is_dir_exist(session_path) == true then
+  if utils.is_dir_exist(session_path) == true then
     fs_table:scandir(session_path)
     print('Session List:')
     print(' ')
@@ -148,7 +127,7 @@ local function delete_session(session)
   local session_file = session..'.vim'
   local session_shada = session..'.shada'
 
-  if is_file_exist(session_path..session_file) == true then
+  if utils.is_file_exist(session_path..session_file) == true then
     if os.execute('rm '..session_path..session_file) > 0 then
       vim.api.nvim_err_writeln('fatal: cannot delete'..session_file..', check your permission!')
     end
