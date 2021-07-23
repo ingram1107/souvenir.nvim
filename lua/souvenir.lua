@@ -115,11 +115,15 @@ end
 local function list_session()
   if utils.is_dir_exist(session_path) == true then
     fs_table:scandir(session_path)
-    print('Session List:')
-    print(' ')
-    fs_table:print()
+    if not fs_table:is_empty() then
+      print('Session List:')
+      print(' ')
+      fs_table:print()
+    else
+      vim.api.nvim_echo({{'souvenir: no session has been stored', 'Normal'}}, true, {})
+    end
   else
-    vim.api.nvim_echo({{'souvenir: no session has been stored', 'Normal'}}, true, {})
+    vim.api.nvim_echo({{'souvenir: session directory does not exist', 'Normal'}}, true, {})
   end
 end
 

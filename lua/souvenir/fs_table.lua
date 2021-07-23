@@ -7,6 +7,14 @@ function M:insert(file_name, type)
   end
 end
 
+function M:is_empty()
+  if #M == 0 then
+    return true
+  else
+    return false
+  end
+end
+
 function M:make_empty()
   for i, _ in ipairs(self) do
     M[i] = nil
