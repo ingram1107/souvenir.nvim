@@ -182,6 +182,6 @@ return {
   restore_session = restore_session,
   delete_session  = delete_session,
   list_session    = list_session,
-  _session_path   = session_path,
+  _session_path   = get_session_path,
   setup           = setup,
 }
