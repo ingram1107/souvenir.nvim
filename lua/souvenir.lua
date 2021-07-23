@@ -19,7 +19,12 @@ if vim.version().minor < 5 then
   return
 end
 
-local SHADA_PATH = (function()
+local SHADA_PATH
+local session_path = nil
+local override_opt = false
+local shada        = true
+
+local function find_shada()
   if os.getenv('XDG_DATA_HOME') ~= nil then
     return os.getenv('XDG_DATA_HOME')..'/nvim/shada/'
   else
@@ -30,10 +35,14 @@ local SHADA_PATH = (function()
           - littleclover 2021-07-03 11:59:47 PM +0800
   --]]
   end
-end)()
-local session_path = nil
-local override_opt = false
-local shada        = true
+end
+
+local async
+async = vim.loop.new_async(function()
+  SHADA_PATH = find_shada()
+  async:close()
+end)
+async:send()
 
 local function set_session_path(path)
   session_path = vim.fn.expand(path)
