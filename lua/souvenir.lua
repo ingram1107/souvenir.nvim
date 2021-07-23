@@ -151,7 +151,7 @@ local function delete_session(session)
       vim.api.nvim_err_writeln('fatal: cannot delete'..session_file..', check your permission!')
     end
     if shada ~= false then
-      if os.execute('rm '..SHADA_PATH..session_shada) >0 then
+      if os.execute('rm '..SHADA_PATH..session_shada) > 0 then
         vim.api.nvim_err_writeln('fatal: cannot delete'..session_shada..', check your permission!')
       end
     end
