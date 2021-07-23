@@ -4,8 +4,6 @@ A Neovim plugin that manages Neovim sessions
 ## Requirement
 Neovim 0.5+
 
-[plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
-
 ## Installation
 vim-plug
 

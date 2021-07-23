@@ -12,7 +12,7 @@
   You should have received a copy of the GNU General Public License 
   along with this program.  If not, see <https://www.gnu.org/licenses/>
 --]]
-local scan = require('plenary').scandir
+local fs_table = require('souvenir.fs_table')
 
 if vim.version().minor < 5 then
   vim.api.nvim_err_writeln('fatal: souvenir: require Neovim version 0.5+')
@@ -131,13 +131,10 @@ local function list_session()
   session_path = session_path_init()..'/'
 
   if is_dir_exist(session_path) == true then
-    local file_list_tbl = scan.scan_dir(session_path, { depth = 1 })
+    fs_table:scandir(session_path)
     print('Session List:')
     print(' ')
-    for i, file in ipairs(file_list_tbl) do
-      local base_file = vim.fn.substitute(file, '.*/', '', '')
-      print('    '..i..'. '..vim.fn.substitute(base_file, '.vim', '', ''))
-    end
+    fs_table:print()
   else
     vim.api.nvim_echo({{'souvenir: no session has been stored', 'Normal'}}, true, {})
   end

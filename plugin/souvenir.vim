@@ -16,7 +16,8 @@ func s:session_name(path)
 endfunc
 
 func souvenir#completion(lead, cmd_line, cusor_pos) abort
-  let file_list = luaeval('require("plenary.scandir").scan_dir(require("souvenir")._session_path(), { depth = 1 })')
+  let session_path = luaeval('require("souvenir")._session_path()')
+  let file_list = luaeval('require("souvenir.fs_table"):scandir(_A)', session_path)
   let file_list = map(file_list, {_, val -> s:session_name(val)})
   return file_list
 endfunc
