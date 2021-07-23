@@ -44,8 +44,8 @@ async = vim.loop.new_async(function()
 end)
 async:send()
 
-local function set_session_path(path)
-  session_path = vim.fn.expand(path)
+local function get_session_path()
+  return session_path
 end
 
 local function is_dir_exist(dir)
@@ -70,17 +70,17 @@ local function create_dir_recur(path)
   end
 end
 
-local function session_path_init()
-  if session_path == '' or session_path == nil then
+local function session_path_init(path)
+  if path == '' or path == nil then
     if os.getenv('XDG_DATA_HOME') ~= nil then
-      session_path = os.getenv('XDG_DATA_HOME')..'/nvim/souvenirs'
-      if is_dir_exist(session_path) == false then
-        create_dir_recur(session_path)
+      path = os.getenv('XDG_DATA_HOME')..'/nvim/souvenirs'
+      if is_dir_exist(path) == false then
+        create_dir_recur(path)
       end
     else
-      session_path = os.getenv('HOME')..'/.local/share/nvim/souvenirs'
-      if is_dir_exist(session_path) == false then
-        create_dir_recur(session_path)
+      path = os.getenv('HOME')..'/.local/share/nvim/souvenirs'
+      if is_dir_exist(path) == false then
+        create_dir_recur(path)
       end
     end
     --[[
@@ -89,12 +89,13 @@ local function session_path_init()
     - littleclover 2021-07-03 11:59:47 PM +0800
     --]]
   else
-    if is_dir_exist(session_path) == false then
-      create_dir_recur(session_path)
+    path = vim.fn.expand(path)
+    if is_dir_exist(path) == false then
+      create_dir_recur(path)
     end
   end
 
-  return session_path
+  return path..'/'
 end
 
 local function save_session(args)
@@ -102,8 +103,6 @@ local function save_session(args)
   local session_file = args[1]..'.vim' or args.session..'.vim'
   local session_shada = args[1]..'.shada' or args.session..'.shada'
   local override = args[2] or args.override or override_opt
-
-  session_path = session_path_init()..'/'
 
   if override == false and is_file_exist(session_path..session_file) == false then
     vim.api.nvim_exec('mksession '..session_path..session_file, false)
@@ -124,8 +123,6 @@ local function restore_session(session)
   local session_file = session..'.vim'
   local session_shada = session..'.shada'
 
-  session_path = session_path_init()..'/'
-
   if is_file_exist(session_path..session_file) == true then
     vim.api.nvim_exec('source '..session_path..session_file, false)
     if shada ~= false then
@@ -137,8 +134,6 @@ local function restore_session(session)
 end
 
 local function list_session()
-  session_path = session_path_init()..'/'
-
   if is_dir_exist(session_path) == true then
     fs_table:scandir(session_path)
     print('Session List:')
@@ -152,8 +147,6 @@ end
 local function delete_session(session)
   local session_file = session..'.vim'
   local session_shada = session..'.shada'
-
-  session_path = session_path_init()..'/'
 
   if is_file_exist(session_path..session_file) == true then
     if os.execute('rm '..session_path..session_file) > 0 then
@@ -173,9 +166,7 @@ end
 local function setup(cfg_tbl)
   local sp = cfg_tbl['session_path']
 
-  if sp ~= nil and sp ~= '' then
-    set_session_path(sp)
-  end
+  session_path = session_path_init(sp)
 
   if cfg_tbl['override'] ~= nil then
     override_opt = cfg_tbl['override']
@@ -191,6 +182,6 @@ return {
   restore_session = restore_session,
   delete_session  = delete_session,
   list_session    = list_session,
-  _session_path   = session_path_init,
+  _session_path   = session_path,
   setup           = setup,
 }
