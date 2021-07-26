@@ -9,7 +9,6 @@ vim-plug
 
 ```viml
 Plug 'ingram1107/souvenir.nvim'
-Plug 'nvim-lua/plenary.nvim'
 ```
 
 packer
@@ -17,7 +16,6 @@ packer
 ```lua
 use {
   'ingram1107/souvenir.nvim',
-  requires = 'nvim-lua/plenary.nvim',
 }
 ```
 
