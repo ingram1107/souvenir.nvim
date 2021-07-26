@@ -20,49 +20,17 @@ if vim.version().minor < 5 then
   return
 end
 
-local SHADA_PATH
+local SHADA_PATH = (function() return vim.fn.stdpath('data')..'/shada/' end)()
 local session_path = nil
 local override_opt = false
 local shada        = true
 
-local function find_shada()
-  if os.getenv('XDG_DATA_HOME') ~= nil then
-    return os.getenv('XDG_DATA_HOME')..'/nvim/shada/'
-  else
-    return os.getenv('HOME')..'.local/share/nvim/shada/'
-  --[[
-    TODO:
-        add window path support
-          - littleclover 2021-07-03 11:59:47 PM +0800
-  --]]
-  end
-end
-
-local async
-async = vim.loop.new_async(function()
-  SHADA_PATH = find_shada()
-  async:close()
-end)
-async:send()
-
 local function session_path_init(path)
   if path == '' or path == nil then
-    if os.getenv('XDG_DATA_HOME') ~= nil then
-      path = os.getenv('XDG_DATA_HOME')..'/nvim/souvenirs'
-      if utils.is_dir_exist(path) == false then
-        utils.create_dir_recur(path)
-      end
-    else
-      path = os.getenv('HOME')..'/.local/share/nvim/souvenirs'
-      if utils.is_dir_exist(path) == false then
-        utils.create_dir_recur(path)
-      end
+    path = vim.fn.stdpath('data')..'/souvenirs'
+    if utils.is_dir_exist(path) == false then
+      utils.create_dir_recur(path)
     end
-    --[[
-    TODO:
-    add window path support
-    - littleclover 2021-07-03 11:59:47 PM +0800
-    --]]
   else
     path = vim.fn.expand(path)
     if utils.is_dir_exist(path) == false then
