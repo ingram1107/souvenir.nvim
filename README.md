@@ -59,7 +59,7 @@ functionalities are shown as below:
 :SouvenirSave       " don't override existing session file
 :SouvenirSaveForce  " override existing session file
 :SouvenirRestore
-:SouvenirDelete
+:SouvenirDelete     " accept multiple files
 :SouvenirList
 ```
 
@@ -67,7 +67,7 @@ functionalities are shown as below:
 :lua require('souvenir').save_session{'souvenir'} -- don't override existing session file
 :lua require('souvenir').save_session{'souvenir', true} -- override exisitng session file
 :lua require('souvenir').restore_session('souvenir')
-:lua require('souvenir').delete_session('souvenir')
+:lua require('souvenir').delete_session('souvenir', 'memoir', 'nostalgic')
 :lua require('souvenir').list_session()
 ```
 
@@ -83,7 +83,7 @@ between `:SouvenirSave` and `:SouvenirSaveForce` or their lua counterparts.
 - [x] save session to a pre-configured location
 - [x] restore session
 - [x] delete session
-  - [ ] delete multiple sessions
+  - [x] delete multiple sessions
 - [x] list sessions
 - [x] session name completion
 - [ ] interactive buffer?

@@ -129,22 +129,25 @@ function M.list_session()
   end
 end
 
-function M.delete_session(session)
-  local session_file = session..'.vim'
-  local session_shada = session..'.shada'
+function M.delete_session(...)
+  local sessions = {...}
+  for _, session in ipairs(sessions) do
+    local session_file = session..'.vim'
+    local session_shada = session..'.shada'
 
-  if utils.is_file_exist(session_path..session_file) == true then
-    if os.execute('rm '..session_path..session_file) > 0 then
-      vim.api.nvim_err_writeln('fatal: cannot delete'..session_file..', check your permission!')
-    end
-    if shada ~= false then
-      if os.execute('rm '..SHADA_PATH..session_shada) > 0 then
-        vim.api.nvim_err_writeln('fatal: cannot delete'..session_shada..', check your permission!')
+    if utils.is_file_exist(session_path..session_file) == true then
+      if os.execute('rm '..session_path..session_file) > 0 then
+        vim.api.nvim_err_writeln('fatal: cannot delete'..session_file..', check your permission!')
       end
+      if shada ~= false then
+        if os.execute('rm '..SHADA_PATH..session_shada) > 0 then
+          vim.api.nvim_err_writeln('fatal: cannot delete'..session_shada..', check your permission!')
+        end
+      end
+      vim.api.nvim_echo({{'souvenir: session `'..session..'` deleted', 'Normal'}}, true, {})
+    else
+      vim.api.nvim_err_writeln('fatal: '..session_file..' does not exist')
     end
-    vim.api.nvim_echo({{'souvenir: session `'..session..'` deleted', 'Normal'}}, true, {})
-  else
-    vim.api.nvim_err_writeln('fatal: '..session_file..' does not exist')
   end
 end
 
