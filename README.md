@@ -84,8 +84,8 @@ between `:SouvenirSave` and `:SouvenirSave!` or their lua counterparts.
 - [x] list sessions
 - [x] session name completion
 - [ ] interactive buffer?
-- [ ] cross-platform
-  - [ ] Windows
+- [x] cross-platform
+  - [x] Windows
   - [x] Linux
-  - [ ] macOS
-  - [ ] BSD-variants
+  - [ ] macOS (waiting for someone to test)
+  - [ ] BSD-variants (waiting for someone to test)
