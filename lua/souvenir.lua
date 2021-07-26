@@ -20,49 +20,28 @@ if vim.version().minor < 5 then
   return
 end
 
-local SHADA_PATH
+local SHADA_PATH = (function() 
+  if vim.loop.os_uname().version:match('Windows') then
+    return vim.fn.stdpath('data')..'\\shada\\'
+  else
+    return vim.fn.stdpath('data')..'/shada/'
+  end
+end)()
 local session_path = nil
 local override_opt = false
 local shada        = true
 
-local function find_shada()
-  if os.getenv('XDG_DATA_HOME') ~= nil then
-    return os.getenv('XDG_DATA_HOME')..'/nvim/shada/'
-  else
-    return os.getenv('HOME')..'.local/share/nvim/shada/'
-  --[[
-    TODO:
-        add window path support
-          - littleclover 2021-07-03 11:59:47 PM +0800
-  --]]
-  end
-end
-
-local async
-async = vim.loop.new_async(function()
-  SHADA_PATH = find_shada()
-  async:close()
-end)
-async:send()
-
 local function session_path_init(path)
   if path == '' or path == nil then
-    if os.getenv('XDG_DATA_HOME') ~= nil then
-      path = os.getenv('XDG_DATA_HOME')..'/nvim/souvenirs'
-      if utils.is_dir_exist(path) == false then
-        utils.create_dir_recur(path)
-      end
+    if vim.loop.os_uname().version:match('Windows') then
+      path = vim.fn.stdpath('data')..'\\souvenirs\\'
     else
-      path = os.getenv('HOME')..'/.local/share/nvim/souvenirs'
-      if utils.is_dir_exist(path) == false then
-        utils.create_dir_recur(path)
-      end
+      path = vim.fn.stdpath('data')..'/souvenirs/'
     end
-    --[[
-    TODO:
-    add window path support
-    - littleclover 2021-07-03 11:59:47 PM +0800
-    --]]
+
+    if utils.is_dir_exist(path) == false then
+      utils.create_dir_recur(path)
+    end
   else
     path = vim.fn.expand(path)
     if utils.is_dir_exist(path) == false then
@@ -70,7 +49,7 @@ local function session_path_init(path)
     end
   end
 
-  return path..'/'
+  return path
 end
 
 local M = {}
@@ -145,7 +124,18 @@ function M.delete_session(...)
     local session_file = session..'.vim'
     local session_shada = session..'.shada'
 
-    if utils.is_file_exist(session_path..session_file) == true then
+  if utils.is_file_exist(session_path..session_file) == true then
+    if vim.loop.os_uname().version:match('Windows') then
+      if os.execute('del '..session_path..session_file) > 0 then
+        vim.api.nvim_err_writeln('fatal: cannot delete'..session_file..', check your permission!')
+      end
+      if shada ~= false then
+        if os.execute('del '..SHADA_PATH..session_shada) > 0 then
+          vim.api.nvim_err_writeln('fatal: cannot delete'..session_shada..', check your permission!')
+        end
+      end
+      vim.api.nvim_echo({{'souvenir: session `'..session..'` deleted', 'Normal'}}, true, {})
+    else
       if os.execute('rm '..session_path..session_file) > 0 then
         vim.api.nvim_err_writeln('fatal: cannot delete'..session_file..', check your permission!')
       end
@@ -155,9 +145,9 @@ function M.delete_session(...)
         end
       end
       vim.api.nvim_echo({{'souvenir: session `'..session..'` deleted', 'Normal'}}, true, {})
-    else
-      vim.api.nvim_err_writeln('fatal: '..session_file..' does not exist')
     end
+  else
+    vim.api.nvim_err_writeln('fatal: '..session_file..' does not exist')
   end
 end
 
