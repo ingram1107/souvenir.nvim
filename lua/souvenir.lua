@@ -124,30 +124,20 @@ function M.delete_session(...)
     local session_file = session..'.vim'
     local session_shada = session..'.shada'
 
-    if utils.is_file_exist(session_path..session_file) == true then
-      if vim.loop.os_uname().version:match('Windows') then
-        if os.execute('del '..session_path..session_file) > 0 then
-          vim.api.nvim_err_writeln('fatal: cannot delete'..session_file..', check your permission!')
-        end
-        if shada ~= false then
-          if os.execute('del '..SHADA_PATH..session_shada) > 0 then
-            vim.api.nvim_err_writeln('fatal: cannot delete'..session_shada..', check your permission!')
-          end
-        end
-        vim.api.nvim_echo({{'souvenir: session `'..session..'` deleted', 'Normal'}}, true, {})
-      else
-        if os.execute('rm '..session_path..session_file) > 0 then
-          vim.api.nvim_err_writeln('fatal: cannot delete'..session_file..', check your permission!')
-        end
-        if shada ~= false then
-          if os.execute('rm '..SHADA_PATH..session_shada) > 0 then
-            vim.api.nvim_err_writeln('fatal: cannot delete'..session_shada..', check your permission!')
-          end
-        end
-        vim.api.nvim_echo({{'souvenir: session `'..session..'` deleted', 'Normal'}}, true, {})
+    local ok, err = os.remove(session_path..session_file)
+    if not ok then
+      vim.api.nvim_err_writeln('fatal: '..err)
+    end
+
+    if shada ~= false then
+      ok, err = os.remove(SHADA_PATH..session_shada)
+      if not ok then
+        vim.api.nvim_err_writeln('fatal: '..err)
       end
-    else
-      vim.api.nvim_err_writeln('fatal: '..session_file..' does not exist')
+    end
+
+    if ok then
+      vim.api.nvim_echo({{'souvenir: session `'..session..'` deleted', 'Normal'}}, true, {})
     end
   end
 end
