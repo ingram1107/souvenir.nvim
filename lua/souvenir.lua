@@ -20,14 +20,25 @@ if vim.version().minor < 5 then
   return
 end
 
-local SHADA_PATH = (function() return vim.fn.stdpath('data')..'/shada/' end)()
+local SHADA_PATH = (function() 
+  if vim.loop.os_uname().version:match('Windows') then
+    return vim.fn.stdpath('data')..'\\shada\\'
+  else
+    return vim.fn.stdpath('data')..'/shada/'
+  end
+end)()
 local session_path = nil
 local override_opt = false
 local shada        = true
 
 local function session_path_init(path)
   if path == '' or path == nil then
-    path = vim.fn.stdpath('data')..'/souvenirs'
+    if vim.loop.os_uname().version:match('Windows') then
+      path = vim.fn.stdpath('data')..'\\souvenirs\\'
+    else
+      path = vim.fn.stdpath('data')..'/souvenirs/'
+    end
+
     if utils.is_dir_exist(path) == false then
       utils.create_dir_recur(path)
     end
@@ -38,7 +49,7 @@ local function session_path_init(path)
     end
   end
 
-  return path..'/'
+  return path
 end
 
 local M = {}
