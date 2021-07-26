@@ -75,7 +75,17 @@ function M.save_session(args)
       vim.api.nvim_exec('wshada! '..SHADA_PATH..session_shada, false)
     end
   else
-    vim.api.nvim_err_writeln('fatal: '..session_file..' exists! pass second arg as `true` to `save_session` to override the file')
+    vim.api.nvim_err_writeln('fatal: '..session_file..' exists! Add `!` or pass second arg as `true` to `save_session` to override')
+  end
+end
+
+function M.save_session_wrap(session, override)
+  if override == '' then
+    override = false
+    M.save_session{session, override}
+  elseif override == '!' then
+    override = true
+    M.save_session{session, override}
   end
 end
 
@@ -108,9 +118,11 @@ function M.list_session()
   end
 end
 
-function M.delete_session(session)
-  local session_file = session..'.vim'
-  local session_shada = session..'.shada'
+function M.delete_session(...)
+  local sessions = {...}
+  for _, session in ipairs(sessions) do
+    local session_file = session..'.vim'
+    local session_shada = session..'.shada'
 
   if utils.is_file_exist(session_path..session_file) == true then
     if vim.loop.os_uname().version:match('Windows') then

@@ -22,8 +22,7 @@ func souvenir#completion(lead, cmd_line, cusor_pos) abort
   return file_list
 endfunc
 
-command! -nargs=1 -complete=customlist,souvenir#completion SouvenirSave lua require('souvenir').save_session{"<args>"}
-command! -nargs=1 -complete=customlist,souvenir#completion SouvenirSaveForce lua require('souvenir').save_session{"<args>", true}
+command! -nargs=1 -bang -complete=customlist,souvenir#completion SouvenirSave lua require('souvenir').save_session_wrap("<args>", "<bang>")
 command! -nargs=1 -complete=customlist,souvenir#completion SouvenirRestore lua require('souvenir').restore_session("<args>")
-command! -nargs=1 -complete=customlist,souvenir#completion SouvenirDelete lua require('souvenir').delete_session("<args>")
+command! -nargs=+ -complete=customlist,souvenir#completion SouvenirDelete lua require('souvenir').delete_session(<f-args>)
 command! -nargs=0 SouvenirList lua require('souvenir').list_session()

@@ -9,7 +9,6 @@ vim-plug
 
 ```viml
 Plug 'ingram1107/souvenir.nvim'
-Plug 'nvim-lua/plenary.nvim'
 ```
 
 packer
@@ -17,7 +16,6 @@ packer
 ```lua
 use {
   'ingram1107/souvenir.nvim',
-  requires = 'nvim-lua/plenary.nvim',
 }
 ```
 
@@ -56,10 +54,9 @@ Vim session, delete Vim session and list Vim sessions. Commands to call these 4
 functionalities are shown as below:
 
 ```viml
-:SouvenirSave       " don't override existing session file
-:SouvenirSaveForce  " override existing session file
+:SouvenirSave[!]    " save session (`!` to override)
 :SouvenirRestore
-:SouvenirDelete
+:SouvenirDelete     " accept multiple files
 :SouvenirList
 ```
 
@@ -67,12 +64,12 @@ functionalities are shown as below:
 :lua require('souvenir').save_session{'souvenir'} -- don't override existing session file
 :lua require('souvenir').save_session{'souvenir', true} -- override exisitng session file
 :lua require('souvenir').restore_session('souvenir')
-:lua require('souvenir').delete_session('souvenir')
+:lua require('souvenir').delete_session('souvenir', 'memoir', 'nostalgic')
 :lua require('souvenir').list_session()
 ```
 
 If option `override` is set to true, there should be no behavioural differences
-between `:SouvenirSave` and `:SouvenirSaveForce` or their lua counterparts.
+between `:SouvenirSave` and `:SouvenirSave!` or their lua counterparts.
 
 ## Inspiration
 
@@ -83,7 +80,7 @@ between `:SouvenirSave` and `:SouvenirSaveForce` or their lua counterparts.
 - [x] save session to a pre-configured location
 - [x] restore session
 - [x] delete session
-  - [ ] delete multiple sessions
+  - [x] delete multiple sessions
 - [x] list sessions
 - [x] session name completion
 - [ ] interactive buffer?
