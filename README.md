@@ -56,8 +56,7 @@ Vim session, delete Vim session and list Vim sessions. Commands to call these 4
 functionalities are shown as below:
 
 ```viml
-:SouvenirSave       " don't override existing session file
-:SouvenirSaveForce  " override existing session file
+:SouvenirSave[!]    " save session (`!` to override)
 :SouvenirRestore
 :SouvenirDelete     " accept multiple files
 :SouvenirList
@@ -72,7 +71,7 @@ functionalities are shown as below:
 ```
 
 If option `override` is set to true, there should be no behavioural differences
-between `:SouvenirSave` and `:SouvenirSaveForce` or their lua counterparts.
+between `:SouvenirSave` and `:SouvenirSave!` or their lua counterparts.
 
 ## Inspiration
 

@@ -96,7 +96,17 @@ function M.save_session(args)
       vim.api.nvim_exec('wshada! '..SHADA_PATH..session_shada, false)
     end
   else
-    vim.api.nvim_err_writeln('fatal: '..session_file..' exists! pass second arg as `true` to `save_session` to override the file')
+    vim.api.nvim_err_writeln('fatal: '..session_file..' exists! Add `!` or pass second arg as `true` to `save_session` to override')
+  end
+end
+
+function M.save_session_wrap(session, override)
+  if override == '' then
+    override = false
+    M.save_session{session, override}
+  elseif override == '!' then
+    override = true
+    M.save_session{session, override}
   end
 end
 
