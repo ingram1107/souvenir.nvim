@@ -2,7 +2,11 @@ local M = {}
 
 function M:insert(file_name, type)
   if type == 'file' then
-    file_name = vim.fn.substitute(file_name, '.vim', '', '')
+    local offset = string.find(file_name, '%.vim$')
+    if offset ~= nil then
+      file_name = string.sub(file_name, 1, offset-1)
+    end
+
     table.insert(M, file_name)
   end
 end

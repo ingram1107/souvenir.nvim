@@ -11,7 +11,7 @@ endfunc
 
 func s:session_name(path)
   let base_fname = s:base_file(a:path)
-  let session_name = substitute(base_fname, '.vim', '', '')
+  let session_name = substitute(base_fname, '\.vim$', '', '')
   return session_name
 endfunc
 
