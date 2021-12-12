@@ -19,25 +19,25 @@ local function gen_new_finder()
     results = fs_table:scandir(souvenir._session_path()),
     entry_maker = function(entry)
       local displayer = entry_display.create({
-        seperator = " ",
+        seperator = ' ',
         items = {
           { width = 50 },
         },
       })
 
       local function make_display(entry)
-          return displayer({
-            entry.value,
-          })
+        return displayer({
+          entry.value,
+        })
       end
 
       return {
         value = entry,
         display = make_display,
         ordinal = entry,
-        path = souvenir._session_path()
+        path = souvenir._session_path(),
       }
-    end
+    end,
   })
 end
 
@@ -58,13 +58,13 @@ local function souvenir_telescope(opts)
   opts = opts or {}
 
   pickers.new(opts, {
-    prompt_title = "Session List",
+    prompt_title = 'Session List',
     finder = gen_new_finder(),
     sorter = conf.generic_sorter(opts),
     attach_mappings = function(_, map)
       actions.select_default:replace(open_souvenir_session)
-      map("i", "<c-d>", delete_souvenir_session)
-      map("n", "<c-d>", delete_souvenir_session)
+      map('i', '<c-d>', delete_souvenir_session)
+      map('n', '<c-d>', delete_souvenir_session)
       return true
     end,
   }):find()
