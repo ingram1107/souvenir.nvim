@@ -29,11 +29,9 @@ require('souvenir').setup {
 }
 ```
 
-Or else the default session path would be set to
-`$XDG_DATA_HOME/nvim/souvenirs` or `$HOME/.local/share/nvim/souvenirs`
-according to your system environment variables. Currently, this plugin only
-support Linux path. (Do not work in Windows, may not work in macOS and
-BSD-variants)
+Or else the default session path would be set to a directory named `souvenirs`
+in your system's standard data path. (`$XDG_DATA_HOME/nvim` if you are using
+Linux, `~/AppData/Local/nvim-data` if you are using Windows)
 
 Other settings such as `override` and `shada` are available too. Set `override`
 to `true` will allow the behaviour of overriding an existing session to be the
