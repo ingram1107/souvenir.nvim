@@ -41,13 +41,11 @@ local function gen_new_finder()
   })
 end
 
--- TODO: need to have a way to somewhat execute source command on the target window
--- local function open_souvenir_session(prompt_bufnr)
---   local selection = action_state.get_selected_entry()
---   souvenir.restore_session(selection.value)
---   local current_picker = action_state.get_current_picker(prompt_bufnr)
---   current_picker:refresh(gen_new_finder(), { reset_prompt = true })
--- end
+local function open_souvenir_session(prompt_bufnr)
+  local selection = action_state.get_selected_entry()
+  actions.close(prompt_bufnr)
+  souvenir.restore_session(selection.value)
+end
 
 local function delete_souvenir_session(prompt_bufnr)
   local selection = action_state.get_selected_entry()
@@ -64,8 +62,7 @@ local function souvenir_telescope(opts)
     finder = gen_new_finder(),
     sorter = conf.generic_sorter(opts),
     attach_mappings = function(_, map)
-      -- map("i", "<cr>", open_souvenir_session)
-      -- map("n", "<cr>", open_souvenir_session)
+      actions.select_default:replace(open_souvenir_session)
       map("i", "<c-d>", delete_souvenir_session)
       map("n", "<c-d>", delete_souvenir_session)
       return true
