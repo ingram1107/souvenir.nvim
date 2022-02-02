@@ -74,14 +74,14 @@ between `:SouvenirSave` and `:SouvenirSave!` or their lua counterparts.
 [xolox/vim-session](https://github.com/xolox/vim-session)
 
 ## Todo
-- [ ] documentation
+- [x] documentation
 - [x] save session to a pre-configured location
 - [x] restore session
 - [x] delete session
   - [x] delete multiple sessions
 - [x] list sessions
 - [x] session name completion
-- [ ] interactive buffer?
+- [x] interactive buffer (telescope)
 - [x] cross-platform
   - [x] Windows
   - [x] Linux

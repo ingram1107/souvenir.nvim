@@ -1,0 +1,79 @@
+*souvenir.nvim* manage Neovim sessions with ease
+
+Author: Little Clover
+License: GPLv3 (see <https://www.gnu.org/licenses/>)
+
+=============================================================================
+                                                                   *souvenir*
+
+souvenir.nvim helps you manage Neovim sessions where you could specify where
+should the session files should be stored.
+
+=============================================================================
+                                                            *souvenir-config*
+
+The default configuration is as follows:
+
+>
+	require('souvenir').setup {
+	  session_path = vim.fn.stdpath.('data').."/shada/",
+	  override = false,
+	  shada = true,
+	}
+<
+
+`session_path` is where the session files will be stored. By default, it will
+be the data directory in |base-directories|.
+
+`override` defines the default behaviour of |souvenir-save|. If it is true,
+means that |souvenir-save| will always override the session file that has the
+same name. Otherwise, you need to explictly specify to override the session
+file when in conflict.
+
+`shada` defines whether a shada-file should be created upon saving. If it is
+true, a shada-file will be created. Else, it will not. See |shada| for more
+information.
+
+=============================================================================
+                                                           *souvenir-command*
+
+                                                              *:SouvenirSave*
+:SouvenirSave[!] [session]
+
+	Save session into `session_path`. The exclamation mark indicates
+	whether it should override the conflict sessions with the same name.
+	If `override` is set to true, there will be no behavioural difference
+	between them.
+
+                                                           *:SouvenirRestore*
+:SouvenirRestore [session]
+
+	Restore session from `session_path`.
+
+                                                            *:SouvenirDelete*
+:SouvenirDelete [session] ...
+
+	Delete session(s) in `session_path`. Yes, you could delete multiple
+	sessions.
+
+                                                              *:SouvenirList*
+:SouvenirList
+
+	List sessions in the style of:
+
+>
+Session List:
+
+    1. first session
+    2. second session
+<
+
+=============================================================================
+                                                         *souvenir-telescope*
+
+Call `:Telescope souvenir` to interactively load your session. The mapping is
+simple:
+- <CR>: load session
+- <C-d>: delete sesssion
+
+  vim:tw=78:ts=8:ft=help:norl:
