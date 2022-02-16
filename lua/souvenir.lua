@@ -13,7 +13,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>
 --]]
 local fs_table = require('souvenir.fs_table')
-local utils = require('utils')
+local utils = require('souvenir.utils')
 
 if vim.version().minor < 5 then
   vim.api.nvim_err_writeln('fatal: souvenir: require Neovim version 0.5+')
