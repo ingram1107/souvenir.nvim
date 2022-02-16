@@ -16,16 +16,16 @@ end
 
 function M.create_dir_recur(path)
   if vim.loop.os_uname().version:match('Windows') then
-    if os.execute('mkdir '..path) > 0 then
-      vim.api.nvim_err_writeln('fatal: cannot create directory '..path)
+    if os.execute('mkdir ' .. path) > 0 then
+      vim.api.nvim_err_writeln('fatal: cannot create directory ' .. path)
     else
-      vim.api.nvim_echo({{'souvenir: directory '..path..' successfully created', 'Normal'}}, true, {})
+      vim.api.nvim_echo({ { 'souvenir: directory ' .. path .. ' successfully created', 'Normal' } }, true, {})
     end
   else
-    if os.execute('mkdir -p '..path) > 0 then
-      vim.api.nvim_err_writeln('fatal: cannot create directory '..path)
+    if os.execute('mkdir -p ' .. path) > 0 then
+      vim.api.nvim_err_writeln('fatal: cannot create directory ' .. path)
     else
-      vim.api.nvim_echo({{'souvenir: directory '..path..' successfully created', 'Normal'}}, true, {})
+      vim.api.nvim_echo({ { 'souvenir: directory ' .. path .. ' successfully created', 'Normal' } }, true, {})
     end
   end
 end

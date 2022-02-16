@@ -4,7 +4,7 @@ function M:insert(file_name, type)
   if type == 'file' then
     local offset = string.find(file_name, '%.vim$')
     if offset ~= nil then
-      file_name = string.sub(file_name, 1, offset-1)
+      file_name = string.sub(file_name, 1, offset - 1)
     end
 
     table.insert(M, file_name)
@@ -40,7 +40,7 @@ end
 
 function M:print()
   for i, file_name in ipairs(self) do
-    print('    '..i..'. '..file_name)
+    print('    ' .. i .. '. ' .. file_name)
   end
 end
 

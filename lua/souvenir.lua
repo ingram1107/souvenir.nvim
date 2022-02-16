@@ -20,23 +20,23 @@ if vim.version().minor < 5 then
   return
 end
 
-local SHADA_PATH = (function() 
+local SHADA_PATH = (function()
   if vim.loop.os_uname().version:match('Windows') then
-    return vim.fn.stdpath('data')..'\\shada\\'
+    return vim.fn.stdpath('data') .. '\\shada\\'
   else
-    return vim.fn.stdpath('data')..'/shada/'
+    return vim.fn.stdpath('data') .. '/shada/'
   end
 end)()
 local session_path = nil
 local override_opt = false
-local shada        = true
+local shada = true
 
 local function session_path_init(path)
   if path == '' or path == nil then
     if vim.loop.os_uname().version:match('Windows') then
-      path = vim.fn.stdpath('data')..'\\souvenirs\\'
+      path = vim.fn.stdpath('data') .. '\\souvenirs\\'
     else
-      path = vim.fn.stdpath('data')..'/souvenirs/'
+      path = vim.fn.stdpath('data') .. '/souvenirs/'
     end
 
     if utils.is_dir_exist(path) == false then
@@ -60,46 +60,48 @@ end
 
 function M.save_session(args)
   setmetatable(args, { __index = { override = false } })
-  local session_file = args[1]..'.vim' or args.session..'.vim'
-  local session_shada = args[1]..'.shada' or args.session..'.shada'
+  local session_file = args[1] .. '.vim' or args.session .. '.vim'
+  local session_shada = args[1] .. '.shada' or args.session .. '.shada'
   local override = args[2] or args.override or override_opt
 
-  if override == false and utils.is_file_exist(session_path..session_file) == false then
-    vim.cmd('mksession '..session_path..session_file)
+  if override == false and utils.is_file_exist(session_path .. session_file) == false then
+    vim.cmd('mksession ' .. session_path .. session_file)
     if shada ~= false then
-      vim.cmd('wshada! '..SHADA_PATH..session_shada)
+      vim.cmd('wshada! ' .. SHADA_PATH .. session_shada)
     end
   elseif override == true then
-    vim.cmd('mksession! '..session_path..session_file)
+    vim.cmd('mksession! ' .. session_path .. session_file)
     if shada ~= false then
-      vim.cmd('wshada! '..SHADA_PATH..session_shada)
+      vim.cmd('wshada! ' .. SHADA_PATH .. session_shada)
     end
   else
-    vim.api.nvim_err_writeln('fatal: '..session_file..' exists! Add `!` or pass second arg as `true` to `save_session` to override')
+    vim.api.nvim_err_writeln(
+      'fatal: ' .. session_file .. ' exists! Add `!` or pass second arg as `true` to `save_session` to override'
+    )
   end
 end
 
 function M.save_session_wrap(session, override)
   if override == '' then
     override = false
-    M.save_session{session, override}
+    M.save_session({ session, override })
   elseif override == '!' then
     override = true
-    M.save_session{session, override}
+    M.save_session({ session, override })
   end
 end
 
 function M.restore_session(session)
-  local session_file = session..'.vim'
-  local session_shada = session..'.shada'
+  local session_file = session .. '.vim'
+  local session_shada = session .. '.shada'
 
-  if utils.is_file_exist(session_path..session_file) == true then
-    vim.cmd('source '..session_path..session_file)
+  if utils.is_file_exist(session_path .. session_file) == true then
+    vim.cmd('source ' .. session_path .. session_file)
     if shada ~= false then
-      vim.cmd('rshada! '..SHADA_PATH..session_shada)
+      vim.cmd('rshada! ' .. SHADA_PATH .. session_shada)
     end
   else
-    vim.api.nvim_err_writeln('fatal: '..session_file..' does not exist')
+    vim.api.nvim_err_writeln('fatal: ' .. session_file .. ' does not exist')
   end
 end
 
@@ -111,33 +113,33 @@ function M.list_session()
       print(' ')
       fs_table:print()
     else
-      vim.api.nvim_echo({{'souvenir: no session has been stored', 'Normal'}}, true, {})
+      vim.api.nvim_echo({ { 'souvenir: no session has been stored', 'Normal' } }, true, {})
     end
   else
-    vim.api.nvim_echo({{'souvenir: session directory does not exist', 'Normal'}}, true, {})
+    vim.api.nvim_echo({ { 'souvenir: session directory does not exist', 'Normal' } }, true, {})
   end
 end
 
 function M.delete_session(...)
-  local sessions = {...}
+  local sessions = { ... }
   for _, session in ipairs(sessions) do
-    local session_file = session..'.vim'
-    local session_shada = session..'.shada'
+    local session_file = session .. '.vim'
+    local session_shada = session .. '.shada'
 
-    local ok, err = os.remove(session_path..session_file)
+    local ok, err = os.remove(session_path .. session_file)
     if not ok then
-      vim.api.nvim_err_writeln('fatal: '..err)
+      vim.api.nvim_err_writeln('fatal: ' .. err)
     end
 
     if shada ~= false then
-      ok, err = os.remove(SHADA_PATH..session_shada)
+      ok, err = os.remove(SHADA_PATH .. session_shada)
       if not ok then
-        vim.api.nvim_err_writeln('fatal: '..err)
+        vim.api.nvim_err_writeln('fatal: ' .. err)
       end
     end
 
     if ok then
-      vim.api.nvim_echo({{'souvenir: session `'..session..'` deleted', 'Normal'}}, true, {})
+      vim.api.nvim_echo({ { 'souvenir: session `' .. session .. '` deleted', 'Normal' } }, true, {})
     end
   end
 end
