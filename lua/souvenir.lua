@@ -65,14 +65,14 @@ function M.save_session(args)
   local override = args[2] or args.override or override_opt
 
   if override == false and utils.is_file_exist(session_path..session_file) == false then
-    vim.api.nvim_exec('mksession '..session_path..session_file, false)
+    vim.cmd('mksession '..session_path..session_file)
     if shada ~= false then
-      vim.api.nvim_exec('wshada! '..SHADA_PATH..session_shada, false)
+      vim.cmd('wshada! '..SHADA_PATH..session_shada)
     end
   elseif override == true then
-    vim.api.nvim_exec('mksession! '..session_path..session_file, false)
+    vim.cmd('mksession! '..session_path..session_file)
     if shada ~= false then
-      vim.api.nvim_exec('wshada! '..SHADA_PATH..session_shada, false)
+      vim.cmd('wshada! '..SHADA_PATH..session_shada)
     end
   else
     vim.api.nvim_err_writeln('fatal: '..session_file..' exists! Add `!` or pass second arg as `true` to `save_session` to override')
@@ -94,9 +94,9 @@ function M.restore_session(session)
   local session_shada = session..'.shada'
 
   if utils.is_file_exist(session_path..session_file) == true then
-    vim.api.nvim_exec('source '..session_path..session_file, false)
+    vim.cmd('source '..session_path..session_file)
     if shada ~= false then
-      vim.api.nvim_exec('rshada! '..SHADA_PATH..session_shada, false)
+      vim.cmd('rshada! '..SHADA_PATH..session_shada)
     end
   else
     vim.api.nvim_err_writeln('fatal: '..session_file..' does not exist')
