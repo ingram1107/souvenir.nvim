@@ -30,6 +30,7 @@ end)()
 local session_path = nil
 local override_opt = false
 local shada = true
+local persistent = false
 
 local function session_path_init(path)
   if path == '' or path == nil then
@@ -151,6 +152,20 @@ function M.setup(cfg_tbl)
 
   if cfg_tbl['override'] ~= nil then
     override_opt = cfg_tbl['override']
+  end
+
+  if cfg_tbl['persistent'] ~= nil then
+    persistent = cfg_tbl['persistent']
+    if persistent == true and override_opt == true then
+      vim.cmd([[
+      aug SouvenirPersistSave
+        au!
+        au BufWinEnter,VimLeave * lua require("souvenir").save_session({vim.fn.expand("%:t")})
+      aug END
+      ]])
+    elseif persistent == true and override_opt ~= true then
+      vim.api.nvim_err_writeln('fatal: both options `override` and `persistent` must be true for persist saving')
+    end
   end
 
   if cfg_tbl['shada'] ~= nil then
