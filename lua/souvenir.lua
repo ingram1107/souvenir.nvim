@@ -160,7 +160,7 @@ function M.setup(cfg_tbl)
       vim.cmd([[
       aug SouvenirPersistSave
         au!
-        au BufWinEnter,VimLeave * lua require("souvenir").save_session({vim.fn.expand("%:t")})
+        au VimLeave * lua require("souvenir").save_session({vim.fn.substitute(vim.fn.expand("%:p"), "\\/", "@", "g")})
       aug END
       ]])
     elseif persistent == true and override_opt ~= true then
