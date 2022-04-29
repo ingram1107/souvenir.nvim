@@ -120,8 +120,7 @@ function M.list_session()
   end
 end
 
-function M.delete_session(...)
-  local sessions = { ... }
+function M.delete_session(sessions)
   for _, session in ipairs(sessions) do
     local session_file = session .. '.vim'
     local session_shada = session .. '.shada'
@@ -156,6 +155,22 @@ function M.setup(cfg_tbl)
   if cfg_tbl['shada'] ~= nil then
     shada = cfg_tbl['shada']
   end
+
+  local function session_name_completion(lead, cmd_line, cursor_pos)
+    local file_list = fs_table:scandir(session_path)
+    return file_list
+  end
+
+  vim.api.nvim_create_user_command('SouvenirSave', function(args)
+    M.save_session({ args.args, args.bang })
+  end, { nargs = 1, bang = true, complete = session_name_completion })
+  vim.api.nvim_create_user_command('SouvenirRestore', function(args)
+    M.restore_session(args.args)
+  end, { nargs = 1, complete = session_name_completion })
+  vim.api.nvim_create_user_command('SouvenirDelete', function(args)
+    M.delete_session(args.fargs)
+  end, { nargs = '+', complete = session_name_completion })
+  vim.api.nvim_create_user_command('SouvenirList', M.list_session, { nargs = 0 })
 end
 
 return M
