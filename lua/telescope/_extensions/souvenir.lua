@@ -49,7 +49,7 @@ end
 
 local function delete_souvenir_session(prompt_bufnr)
   local selection = action_state.get_selected_entry()
-  souvenir.delete_session(selection.value)
+  souvenir.delete_session({ selection.value })
   local current_picker = action_state.get_current_picker(prompt_bufnr)
   current_picker:refresh(gen_new_finder(), { reset_prompt = true })
 end
