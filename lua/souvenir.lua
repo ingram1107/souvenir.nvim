@@ -156,12 +156,14 @@ function M.setup(cfg_tbl)
   if cfg_tbl['persistent'] ~= nil then
     persistent = cfg_tbl['persistent']
     if persistent == true and override_opt == true then
-      vim.cmd([[
-      aug SouvenirPersistSave
-        au!
-        au VimLeave * lua require("souvenir").save_session({vim.fn.substitute(vim.fn.expand("%:p"), "\\/", "@", "g")})
-      aug END
-      ]])
+      vim.api.nvim_create_augroup('SouvenirPresistent', { clear = true })
+      vim.api.nvim_create_autocmd('VimLeave', {
+        pattern = '*',
+        callback = function()
+          require('souvenir').save_session({ vim.fn.substitute(vim.fn.expand('%:p'), '\\/', '@', 'g') })
+        end,
+        desc = 'save session on leaving Neovim',
+      })
     elseif persistent == true and override_opt ~= true then
       vim.api.nvim_err_writeln('fatal: both options `override` and `persistent` must be true for persist saving')
     end
