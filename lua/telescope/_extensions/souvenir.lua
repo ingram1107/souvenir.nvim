@@ -47,8 +47,7 @@ local function open_souvenir_session(prompt_bufnr)
   souvenir.restore_session(selection.value)
 end
 
-local function delete_souvenir_session(prompt_bufnr)
-  local selection = action_state.get_selected_entry()
+local function delete_souvenir_session(prompt_bufnr, selection)
   souvenir.delete_session({ selection.value })
   local current_picker = action_state.get_current_picker(prompt_bufnr)
   current_picker:refresh(gen_new_finder(), { reset_prompt = true })
@@ -61,10 +60,19 @@ local function souvenir_telescope(opts)
     prompt_title = 'Session List',
     finder = gen_new_finder(),
     sorter = conf.generic_sorter(opts),
-    attach_mappings = function(_, map)
+    attach_mappings = function(prompt_bufnr, map)
       actions.select_default:replace(open_souvenir_session)
-      map('i', '<c-d>', delete_souvenir_session)
-      map('n', '<c-d>', delete_souvenir_session)
+      local current_picker = action_state.get_current_picker(prompt_bufnr)
+      map('i', '<c-d>', function()
+        for _, selection in ipairs(current_picker:get_multi_selection()) do
+          delete_souvenir_session(prompt_bufnr, selection)
+        end
+      end)
+      map('n', '<c-d>', function()
+        for _, selection in ipairs(current_picker:get_multi_selection()) do
+          delete_souvenir_session(prompt_bufnr, selection)
+        end
+      end)
       return true
     end,
   }):find()
