@@ -81,16 +81,6 @@ function M.save_session(args)
   end
 end
 
-function M.save_session_wrap(session, override)
-  if override == '' then
-    override = false
-    M.save_session({ session, override })
-  elseif override == '!' then
-    override = true
-    M.save_session({ session, override })
-  end
-end
-
 function M.restore_session(session)
   local session_file = session .. '.vim'
   local session_shada = session .. '.shada'
