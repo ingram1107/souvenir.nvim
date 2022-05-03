@@ -53,6 +53,20 @@ local function delete_souvenir_session(prompt_bufnr, selection)
   current_picker:refresh(gen_new_finder(), { reset_prompt = true })
 end
 
+local function delete_multiple_or_single_souvenir_session(prompt_bufnr)
+  local current_picker = action_state.get_current_picker(prompt_bufnr)
+  local multi_selection_tbl = current_picker:get_multi_selection()
+
+  if not next(multi_selection_tbl) then
+    local selection = action_state.get_selected_entry()
+    delete_souvenir_session(prompt_bufnr, selection)
+  else
+    for _, selection in ipairs(multi_selection_tbl) do
+      delete_souvenir_session(prompt_bufnr, selection)
+    end
+  end
+end
+
 local function souvenir_telescope(opts)
   opts = opts or {}
 
@@ -62,16 +76,11 @@ local function souvenir_telescope(opts)
     sorter = conf.generic_sorter(opts),
     attach_mappings = function(prompt_bufnr, map)
       actions.select_default:replace(open_souvenir_session)
-      local current_picker = action_state.get_current_picker(prompt_bufnr)
       map('i', '<c-d>', function()
-        for _, selection in ipairs(current_picker:get_multi_selection()) do
-          delete_souvenir_session(prompt_bufnr, selection)
-        end
+        delete_multiple_or_single_souvenir_session(prompt_bufnr)
       end)
       map('n', '<c-d>', function()
-        for _, selection in ipairs(current_picker:get_multi_selection()) do
-          delete_souvenir_session(prompt_bufnr, selection)
-        end
+        delete_multiple_or_single_souvenir_session(prompt_bufnr)
       end)
       return true
     end,
