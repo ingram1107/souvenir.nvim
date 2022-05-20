@@ -30,6 +30,7 @@ end)()
 local session_path = nil
 local override_opt = false
 local shada = true
+local persistent = false
 
 local function session_path_init(path)
   if path == '' or path == nil then
@@ -133,6 +134,19 @@ function M.delete_session(sessions)
   end
 end
 
+function M.is_session_exists(name)
+  local sessions = fs_table:scandir(session_path)
+  vim.pretty_print(sessions)
+
+  for _, session in ipairs(sessions) do
+    if name == session then
+      return true
+    end
+  end
+
+  return false
+end
+
 function M.setup(cfg_tbl)
   local sp = cfg_tbl['session_path']
 
@@ -140,6 +154,33 @@ function M.setup(cfg_tbl)
 
   if cfg_tbl['override'] ~= nil then
     override_opt = cfg_tbl['override']
+  end
+
+  if cfg_tbl['persistent'] ~= nil then
+    persistent = cfg_tbl['persistent']
+    if persistent == true and override_opt == true then
+      vim.api.nvim_create_augroup('SouvenirPresistent', { clear = true })
+      vim.api.nvim_create_autocmd('VimLeave', {
+        pattern = '*',
+        callback = function()
+          require('souvenir').save_session({ vim.fn.substitute(vim.fn.expand('%:p'), '\\/', '@', 'g') })
+        end,
+        desc = 'save session on leaving Neovim',
+      })
+      vim.api.nvim_create_autocmd('VimEnter', {
+        pattern = '*',
+        callback = function()
+          local current_file = vim.fn.expand('%:p')
+          local derived_session_name = vim.fn.substitute(current_file, '\\/', '@', 'g')
+          if require('souvenir').is_session_exists(derived_session_name) then
+            require('souvenir').restore_session(derived_session_name)
+          end
+        end,
+        desc = 'restore session upon entering Neovim according to the file',
+      })
+    elseif persistent == true and override_opt ~= true then
+      vim.api.nvim_err_writeln('fatal: both options `override` and `persistent` must be true for persist saving')
+    end
   end
 
   if cfg_tbl['shada'] ~= nil then
