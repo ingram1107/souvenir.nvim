@@ -136,7 +136,7 @@ end
 
 function M.is_session_exists(name)
   local sessions = fs_table:scandir(session_path)
-  vim.pretty_print(sessions)
+  vim.print(sessions)
 
   for _, session in ipairs(sessions) do
     if name == session then
