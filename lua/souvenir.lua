@@ -133,6 +133,45 @@ function M.delete_session(sessions)
   end
 end
 
+function M.record_session(session_name)
+  vim.api.nvim_create_augroup('SouvenirRecordLayout', { clear = true })
+  vim.api.nvim_create_autocmd('BufEnter', {
+    group = 'SouvenirRecordLayout',
+    pattern = '*',
+    callback = function()
+      M.save_session({ session_name, true })
+    end,
+    desc = 'save session upon layout changes',
+  })
+  vim.api.nvim_create_augroup('SouvenirRecordBeforeLeave', { clear = true })
+  vim.api.nvim_create_autocmd('VimLeavePre', {
+    group = 'SouvenirRecordBeforeLeave',
+    pattern = '*',
+    callback = function()
+      M.save_session({ session_name, true })
+    end,
+    desc = 'save session just before leaving',
+  })
+end
+
+function M.stop_record_session()
+  vim.api.nvim_del_augroup_by_name('SouvenirRecordLayout')
+  vim.api.nvim_del_augroup_by_name('SouvenirRecordBeforeLeave')
+end
+
+function M.is_session_exists(name)
+  local sessions = fs_table:scandir(session_path)
+  vim.print(sessions)
+
+  for _, session in ipairs(sessions) do
+    if name == session then
+      return true
+    end
+  end
+
+  return false
+end
+
 function M.setup(cfg_tbl)
   local sp = cfg_tbl['session_path']
 
@@ -141,7 +180,6 @@ function M.setup(cfg_tbl)
   if cfg_tbl['override'] ~= nil then
     override_opt = cfg_tbl['override']
   end
-
   if cfg_tbl['shada'] ~= nil then
     shada = cfg_tbl['shada']
   end
@@ -160,6 +198,10 @@ function M.setup(cfg_tbl)
   vim.api.nvim_create_user_command('SouvenirDelete', function(args)
     M.delete_session(args.fargs)
   end, { nargs = '+', complete = session_name_completion })
+  vim.api.nvim_create_user_command('SouvenirRecord', function(args)
+    M.record_session(args.args)
+  end, { nargs = 1, complete = session_name_completion })
+  vim.api.nvim_create_user_command('SouvenirStopRecord', M.stop_record_session, { nargs = 0 })
   vim.api.nvim_create_user_command('SouvenirList', M.list_session, { nargs = 0 })
 end
 

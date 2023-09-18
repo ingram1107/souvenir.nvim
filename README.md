@@ -47,14 +47,17 @@ require('souvenir').setup {
 }
 ```
 
-souvenir.nvim currently provides 4 functionalities: save Vim session, restore
-Vim session, delete Vim session and list Vim sessions. Commands to call these 4
-functionalities are shown as below:
+souvenir.nvim currently provides 6 functionalities: save Vim session, restore
+Vim session, delete Vim session, continuous session recording, stop such
+recording, and list Vim sessions. Commands to call these 6 functionalities are
+shown as below:
 
 ```viml
 :SouvenirSave[!]    " save session (`!` to override)
 :SouvenirRestore
 :SouvenirDelete     " accept multiple files
+:SouvenirRecord     " record current session
+:SouvenirStopRecord
 :SouvenirList
 ```
 
@@ -63,15 +66,19 @@ functionalities are shown as below:
 :lua require('souvenir').save_session{'souvenir', true} -- override exisitng session file
 :lua require('souvenir').restore_session('souvenir')
 :lua require('souvenir').delete_session({ 'souvenir', 'memoir', 'nostalgic' })
+:lua require('souvenir'),record_session('souvenir') -- automatic override
+:lua require('souvenir').stop_record_session()
 :lua require('souvenir').list_session()
 ```
 
 If option `override` is set to true, there should be no behavioural differences
-between `:SouvenirSave` and `:SouvenirSave!` or their lua counterparts.
+between `:SouvenirSave` and `:SouvenirSave!` or their lua counterparts. **Note**
+that `SouvenirRecord` will override regardless of the `override` option value.
 
 ## Inspiration
 
 [xolox/vim-session](https://github.com/xolox/vim-session)
+[tpope/vim-obsession](https://github.com/tpope/vim-obsession)
 
 ## Todo
 - [x] documentation
